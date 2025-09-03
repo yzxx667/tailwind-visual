@@ -4,7 +4,7 @@ import type { InternalAxiosRequestConfig } from 'axios'
 type AxiosRequestConfig = InternalAxiosRequestConfig<any> & {
   retry_count?: number
 }
-
+console.log(import.meta.env.VITE_BASE_URL)
 // https://api.imooc-web.lgdsunday.club/api
 const instance = axios.create({
   baseURL: import.meta.env.VITE_BASE_URL,

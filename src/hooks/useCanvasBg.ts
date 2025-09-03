@@ -41,7 +41,6 @@ export const useCanvasBg = (
       const containerHeight = containerRef.value?.clientHeight
       canvasRef.value.width = containerWidth
       canvasRef.value.height = containerHeight
-      // console.log(canvasRef.value)
       const ctx = canvasRef.value.getContext('2d')
       const stars: Star[] = []
       for (let i = 0; i < 200; i++) {
