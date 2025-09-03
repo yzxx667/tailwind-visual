@@ -1,24 +1,21 @@
 <script setup lang="ts">
-defineOptions({
-  name: 'HorizontalBar'
-})
+import { ref, watch, onMounted } from 'vue'
 const props = defineProps<{
   data: any
   containerRef: Ref<HTMLDivElement>
 }>()
-// console.log(props.data.regions)
-// echarts 核心模块
-import { ref, onMounted, watch, type Ref } from 'vue'
+console.log(props.data.servers)
+const barContainer = ref<HTMLElement | null>(null)
+
 import * as echarts from 'echarts/core'
 import { GridComponent } from 'echarts/components'
 import { BarChart } from 'echarts/charts'
 import { CanvasRenderer } from 'echarts/renderers'
-// 展示的区域
-const horizontalBar = ref<HTMLDivElement>()
+
 let chart: echarts.ECharts | null = null
 onMounted(() => {
   echarts.use([GridComponent, BarChart, CanvasRenderer])
-  chart = echarts.init(horizontalBar.value)
+  chart = echarts.init(barContainer.value)
   renderChart()
   const observer = new ResizeObserver(() => {
     chart.resize()
@@ -37,69 +34,46 @@ const renderChart = () => {
       containLabel: true
     },
     xAxis: {
+      type: 'category',
+      data: props.data.servers.map((item: any) => item.name),
+      axisLabel: {
+        color: '#9EB1C8'
+      }
+    },
+    yAxis: {
       type: 'value',
       show: false,
+      // 最大值（防止触顶）
       max: function (value) {
         // 取整
         return parseInt(value.max * 1.2)
       }
     },
-    yAxis: {
-      type: 'category',
-      data: props.data.regions.map(item => item.name),
-      // 反向展示
-      inverse: true,
-      // 不展示轴线
-      axisLine: {
-        show: false
-      },
-      // 不展示刻度
-      axisTick: {
-        show: false // 取消 Y 轴刻度
-      },
-      // 文字色值
-      axisLabel: {
-        show: true,
-        color: '#9EB1C8'
-      }
-    },
     series: [
       {
-        // 图表类型
         type: 'bar',
-        // 数据筛选
-        data: props.data.regions.map(item => ({
-          // name: item.name,
-          value: item.value
-        })),
-        // 显示进度条背景
-        showBackground: true,
-        // 背景色
-        backgroundStyle: {
-          color: 'rgba(180, 180, 180, 0.2)'
-        },
-        // 每个轴的样式
+        data: props.data.servers.map((item: any) => item.value),
+        barWidth: 12,
         itemStyle: {
           color: '#479AD3', // 设置柱子的颜色
           barBorderRadius: 5, // 设置柱子的圆角
           shadowColor: 'rgba(0, 0, 0, 0.3)', // 设置柱子的阴影颜色
           shadowBlur: 5 // 设置柱子的阴影模糊大小
         },
-        // 轴宽度
-        barWidth: 12,
-        // 轴上的字体
         label: {
           show: true,
           // 设置标签位置为右侧
-          position: 'right',
+          position: 'top',
           textStyle: {
             // 设置标签文本颜色
             color: '#fff'
-          }
+          },
+          formatter: '{c}%'
         }
       }
     ]
   }
+
   chart.setOption(option)
 }
 
@@ -111,11 +85,10 @@ watch(
   }
 )
 </script>
-
 <template>
   <div>
-    <div class="text-white">【大区数据信息】</div>
-    <div ref="horizontalBar" class="w-full h-full"></div>
+    <div class="text-white">【服务资源占用比】</div>
+    <div ref="barContainer" class="w-full h-full"></div>
   </div>
 </template>
 

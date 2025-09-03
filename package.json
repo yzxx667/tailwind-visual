@@ -18,6 +18,7 @@
   },
   "dependencies": {
     "axios": "^1.11.0",
+    "countup.js": "^2.9.0",
     "echarts": "^6.0.0",
     "pinia": "^3.0.3",
     "vue": "^3.5.18",
@@ -49,7 +50,7 @@
     "vite-plugin-vue-devtools": "^8.0.0",
     "vue-tsc": "^3.0.4"
   },
-  "lint-staged": { 
+  "lint-staged": {
     "*.{js,ts,vue}": [
       "eslint --fix"
     ]
