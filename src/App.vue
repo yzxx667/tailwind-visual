@@ -17,9 +17,9 @@ useCanvasBg(containerRef, canvasRef)
 
 onMounted(async () => {
   requestData()
-  setInterval(() => {
-    requestData()
-  }, 5000)
+  // setInterval(() => {
+  //   requestData()
+  // }, 5000)
 })
 
 const requestData = async () => {
@@ -30,19 +30,16 @@ const requestData = async () => {
 </script>
 
 <template>
-  <div class="w-screen h-screen bg-black" ref="containerRef">
+  <div class="w-screen h-screen bg-black relative" ref="containerRef">
     <!-- 背景 -->
     <canvas ref="canvasRef" class="fixed left-0 top-0 w-full h-full"></canvas>
     <!-- 内容 -->
-    <div v-if="data" class="bg-transparent z-10 flex overflow-hidden chart-container">
+    <div v-if="data"
+      class="bg-transparent z-10 flex overflow-hidden absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 chart-container">
       <!-- 左 -->
       <div class="flex-1 flex flex-col mr-2 bg-slate-800 bg-opacity-50 p-3">
         <!-- 横向柱状图 -->
-        <HorizontalBar
-          :data="data.regionData"
-          :containerRef="containerRef"
-          class="flex-1 box-border pb-4"
-        />
+        <HorizontalBar :data="data.regionData" :containerRef="containerRef" class="flex-1 box-border pb-4" />
         <div class="flex-1 box-border pb-4"></div>
         <div class="flex-1 box-border pb-4"></div>
       </div>
@@ -53,11 +50,7 @@ const requestData = async () => {
       </div>
       <!-- 右 -->
       <div class="flex-1 flex flex-col bg-slate-800 bg-opacity-50 p-3">
-        <VerticalBar
-          :data="data.serverData"
-          :containerRef="containerRef"
-          class="flex-1 box-border pb-4"
-        />
+        <VerticalBar :data="data.serverData" :containerRef="containerRef" class="flex-1 box-border pb-4" />
         <div class="flex-1 box-border pb-4"></div>
         <div class="flex-1 box-border"></div>
       </div>
@@ -78,7 +71,7 @@ const requestData = async () => {
 }
 
 .chart-container {
-  width: px-to-width(1920);
+  width: px-to-width(1820);
   height: px-to-height(1080);
   margin: 0;
   padding: 0;
