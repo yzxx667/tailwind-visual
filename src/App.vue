@@ -4,6 +4,8 @@ import { ref, onMounted } from 'vue'
 import { getData } from './api/api'
 // 背景hooks
 import { useCanvasBg } from './hooks/useCanvasBg'
+// 缩放hooks
+import { useScaleContainer } from './hooks/useScaleContainer'
 const containerRef = ref<HTMLDivElement>()
 const canvasRef = ref<HTMLCanvasElement>()
 // 组件
@@ -14,18 +16,20 @@ import VerticalBar from './components/VerticalBar.vue'
 const data = ref<any>(null)
 // 星星下坠背景
 useCanvasBg(containerRef, canvasRef)
+// 缩放
+const { transformStyle } = useScaleContainer(containerRef)
 
 onMounted(async () => {
   requestData()
-  setInterval(() => {
-    requestData()
-  }, 5000)
+  // setInterval(() => {
+  //   requestData()
+  // }, 5000)
 })
 
 const requestData = async () => {
   const res = await getData()
   data.value = res
-  console.log(data.value)
+  // console.log(data.value)
 }
 </script>
 
@@ -34,15 +38,11 @@ const requestData = async () => {
     <!-- 背景 -->
     <canvas ref="canvasRef" class="fixed left-0 top-0 w-full h-full"></canvas>
     <!-- 内容 -->
-    <div v-if="data" class="bg-transparent z-10 flex overflow-hidden chart-container">
+    <div v-if="data" class="bg-transparent z-10 flex overflow-hidden chart-container" :style="transformStyle">
       <!-- 左 -->
-      <div class="flex-1 flex flex-col mr-2 bg-slate-800 bg-opacity-50 p-3">
+      <div class="flex-1 flex flex-col mr-2 bg-slate-800 bg-opacity-50 p-3 h-full">
         <!-- 横向柱状图 -->
-        <HorizontalBar
-          :data="data.regionData"
-          :containerRef="containerRef"
-          class="flex-1 box-border pb-4"
-        />
+        <HorizontalBar :data="data.regionData" :containerRef="containerRef" class="flex-1 box-border pb-4" />
         <div class="flex-1 box-border pb-4"></div>
         <div class="flex-1 box-border pb-4"></div>
       </div>
@@ -53,11 +53,7 @@ const requestData = async () => {
       </div>
       <!-- 右 -->
       <div class="flex-1 flex flex-col bg-slate-800 bg-opacity-50 p-3">
-        <VerticalBar
-          :data="data.serverData"
-          :containerRef="containerRef"
-          class="flex-1 box-border pb-4"
-        />
+        <VerticalBar :data="data.serverData" :containerRef="containerRef" class="flex-1 box-border pb-4" />
         <div class="flex-1 box-border pb-4"></div>
         <div class="flex-1 box-border"></div>
       </div>
@@ -67,21 +63,32 @@ const requestData = async () => {
 
 <style scoped lang="scss">
 /* 核心代码 */
-@use 'sass:math';
+// @use 'sass:math';
 
-@function px-to-width($px, $design-width: 1920) {
-  @return math.div($px, $design-width) * 100vw;
-}
+// @function px-to-width($px, $design-width: 1920) {
+//   @return math.div($px, $design-width) * 100vw;
+// }
 
-@function px-to-height($px, $design-height: 1080) {
-  @return math.div($px, $design-height) * 100vh;
-}
+// @function px-to-height($px, $design-height: 1080) {
+//   @return math.div($px, $design-height) * 100vh;
+// }
+
+// .chart-container {
+//   width: px-to-width(1920);
+//   height: px-to-height(1080);
+//   margin: 0;
+//   padding: 0;
+//   overflow: hidden;
+// }
 
 .chart-container {
-  width: px-to-width(1920);
-  height: px-to-height(1080);
+  width: 1920px;
+  height: 1080px;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
